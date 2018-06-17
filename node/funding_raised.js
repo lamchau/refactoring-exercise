@@ -3,44 +3,43 @@ const fs = require('fs');
 const path = require('path');
 
 class FundingRaised {
-  static _parseFile(filename) {
+  static _parseFile(filename, options) {
     const filepath = fs.readFileSync(path.join(__dirname, '..', filename)).toString()
     const rows = parseCsvSync(filepath);
     const headers = rows[0];
 
-    FundingRaised.HEADERS = Object.freeze({
-      toIndex(headerName) {
-        return headers.indexOf(headerName);
-      },
-      toName(index) {
-        return headers[index];
-      }
+    return Object.freeze({
+      filters: FundingRaised._createFilters(headers, options),
+      headers,
+      rows: rows.slice(1)
     });
-    return rows.slice(1);
   }
 
-  static createFilters(options = {}) {
+  static _createFilters(headers, options = {}) {
     const filter = [];
     for (const name in options) {
       filter.push({
         value: options[name],
-        index: FundingRaised.HEADERS.toIndex(name)
+        index: headers.indexOf(name)
       })
     }
     return filter;
   }
 
-  static _getRowAsObject(row) {
+  static _getRowAsObject(headers, row) {
     return row.reduce((object, value, index) => {
-      const headerName = FundingRaised.HEADERS.toName(index);
+      const headerName = headers[index];
       object[headerName] = value;
       return object;
     }, {});
   }
 
   static where(options = {}) {
-    const rows = FundingRaised._parseFile('startup_funding.csv');
-    const filters = FundingRaised.createFilters(options);
+    const {
+      headers,
+      rows,
+      filters
+    } = FundingRaised._parseFile('startup_funding.csv', options);
 
     return rows
       .filter(row => {
@@ -49,12 +48,15 @@ class FundingRaised {
           return match && row[index] == value;
         }, true);
       })
-      .map(FundingRaised._getRowAsObject);
+      .map(row => FundingRaised._getRowAsObject(headers, row));
   }
 
   static findBy(options = {}) {
-    const rows = FundingRaised._parseFile('startup_funding.csv');
-    const filters = FundingRaised.createFilters(options);
+    const {
+      headers,
+      rows,
+      filters
+    } = FundingRaised._parseFile('startup_funding.csv', options);
 
     for (const row of rows) {
       const match = filters.reduce((accumulator, filter) => {
@@ -62,7 +64,7 @@ class FundingRaised {
         return accumulator && row[index] == value;
       }, true);
       if (match) {
-        return FundingRaised._getRowAsObject(row);
+        return FundingRaised._getRowAsObject(headers, row);
       }
     }
     return null;
