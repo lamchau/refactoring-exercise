@@ -11,10 +11,7 @@ class FundingRaised {
     } = FundingRaised._parseFile('startup_funding.csv', options);
 
     for (const row of rows) {
-      const match = filters.reduce((accumulator, filter) => {
-        const { value, index } = filter;
-        return accumulator && row[index] == value;
-      }, true);
+      const match = FundingRaised._applyFilter(filters, row);
       if (match) {
         return FundingRaised._getRowAsObject(headers, row);
       }
@@ -30,13 +27,15 @@ class FundingRaised {
     } = FundingRaised._parseFile('startup_funding.csv', options);
 
     return rows
-      .filter(row => {
-        return filters.reduce((match, filter) => {
-          const { value, index } = filter;
-          return match && row[index] == value;
-        }, true);
-      })
+      .filter(row => FundingRaised._applyFilter(filters, row))
       .map(row => FundingRaised._getRowAsObject(headers, row));
+  }
+
+  static _applyFilter(filters, row) {
+    return filters.reduce((match, filter) => {
+      const { value, index } = filter;
+      return match && row[index] === value;
+    }, true);
   }
 
   static _getRowAsObject(headers, row) {
