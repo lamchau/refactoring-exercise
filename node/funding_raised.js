@@ -3,35 +3,23 @@ const fs = require('fs');
 const path = require('path');
 
 class FundingRaised {
-  static _parseFile(filename, options) {
-    const filepath = fs.readFileSync(path.join(__dirname, '..', filename)).toString()
-    const rows = parseCsvSync(filepath);
-    const headers = rows[0];
-
-    return Object.freeze({
-      filters: FundingRaised._createFilters(headers, options),
+  static findBy(options = {}) {
+    const {
       headers,
-      rows: rows.slice(1)
-    });
-  }
+      rows,
+      filters
+    } = FundingRaised._parseFile('startup_funding.csv', options);
 
-  static _createFilters(headers, options = {}) {
-    const filter = [];
-    for (const name in options) {
-      filter.push({
-        value: options[name],
-        index: headers.indexOf(name)
-      })
+    for (const row of rows) {
+      const match = filters.reduce((accumulator, filter) => {
+        const { value, index } = filter;
+        return accumulator && row[index] == value;
+      }, true);
+      if (match) {
+        return FundingRaised._getRowAsObject(headers, row);
+      }
     }
-    return filter;
-  }
-
-  static _getRowAsObject(headers, row) {
-    return row.reduce((object, value, index) => {
-      const headerName = headers[index];
-      object[headerName] = value;
-      return object;
-    }, {});
+    return null;
   }
 
   static where(options = {}) {
@@ -51,23 +39,35 @@ class FundingRaised {
       .map(row => FundingRaised._getRowAsObject(headers, row));
   }
 
-  static findBy(options = {}) {
-    const {
-      headers,
-      rows,
-      filters
-    } = FundingRaised._parseFile('startup_funding.csv', options);
+  static _getRowAsObject(headers, row) {
+    return row.reduce((object, value, index) => {
+      const headerName = headers[index];
+      object[headerName] = value;
+      return object;
+    }, {});
+  }
 
-    for (const row of rows) {
-      const match = filters.reduce((accumulator, filter) => {
-        const { value, index } = filter;
-        return accumulator && row[index] == value;
-      }, true);
-      if (match) {
-        return FundingRaised._getRowAsObject(headers, row);
-      }
+  static _parseFile(filename, options) {
+    const filepath = fs.readFileSync(path.join(__dirname, '..', filename)).toString()
+    const rows = parseCsvSync(filepath);
+    const headers = rows[0];
+
+    return Object.freeze({
+      headers,
+      filters: FundingRaised._createFilters(headers, options),
+      rows: rows.slice(1)
+    });
+  }
+
+  static _createFilters(headers, options = {}) {
+    const filter = [];
+    for (const name in options) {
+      filter.push({
+        value: options[name],
+        index: headers.indexOf(name)
+      })
     }
-    return null;
+    return filter;
   }
 }
 
