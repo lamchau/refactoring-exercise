@@ -8,12 +8,26 @@ class FundingRaised {
     const rows = parseCsvSync(filepath);
     const headers = rows[0];
 
-    FundingRaised.HEADERS = {
+    FundingRaised.HEADERS = Object.freeze({
+      toIndex(headerName) {
+        return headers.indexOf(headerName);
+      },
       toName(index) {
         return headers[index];
       }
-    };
+    });
     return rows.slice(1);
+  }
+
+  static createFilters(options = {}) {
+    const filter = [];
+    for (const name in options) {
+      filter.push({
+        value: options[name],
+        index: FundingRaised.HEADERS.toIndex(name)
+      })
+    }
+    return filter;
   }
 
   static _getRowAsObject(row) {
@@ -25,49 +39,22 @@ class FundingRaised {
   }
 
   static where(options = {}) {
-    let rows = FundingRaised._parseFile('startup_funding.csv');
+    const rows = FundingRaised._parseFile('startup_funding.csv');
+    const filters = FundingRaised.createFilters(options);
 
-    if (options.company_name) {
-      rows = rows.filter(row => options.company_name == row[1]);
-    }
-
-    if (options.city) {
-      rows = rows.filter(row => options.city == row[4]);
-    }
-
-    if (options.state) {
-      rows = rows.filter(row => options.state == row[5]);
-    }
-
-    if (options.round) {
-      rows = rows.filter(row => options.round == row[9]);
-    }
-
-    return rows.map(row => FundingRaised._getRowAsObject(row));
+    return rows
+      .filter(row => {
+        return filters.reduce((match, filter) => {
+          const { value, index } = filter;
+          return match && row[index] == value;
+        }, true);
+      })
+      .map(FundingRaised._getRowAsObject);
   }
 
   static findBy(options = {}) {
-    let rows = FundingRaised._parseFile('startup_funding.csv');
-
-    if (options.company_name) {
-      rows = rows.filter(row => options.company_name == row[1]);
-      return FundingRaised._getRowAsObject(rows[0]);
-    }
-
-    if (options.city) {
-      rows = rows.filter(row => options.city == row[4]);
-     return FundingRaised._getRowAsObject(rows[0]);
-    }
-
-    if (options.state) {
-      rows = rows.filter(row => options.state == row[5]);
-     return FundingRaised._getRowAsObject(rows[0]);
-    }
-
-    if (options.round) {
-      rows = rows.filter(row => options.round == row[9]);
-     return FundingRaised._getRowAsObject(rows[0]);
-    }
+    const rows = FundingRaised.where(options);
+    return rows.length === 0 ? rows : rows[0];
   }
 }
 
