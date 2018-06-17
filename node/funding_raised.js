@@ -2,11 +2,17 @@ const parseCsvSync = require('csv-parse/lib/sync');
 const fs = require('fs');
 const path = require('path');
 
+
+function parseFile(filename) {
+  const filepath = fs.readFileSync(path.join(__dirname, '..', filename)).toString()
+  return parseCsvSync(filepath);
+}
+
 class FundingRaised {
   static where(options = {}) {
-    const funding_file = 'startup_funding.csv';
-    const file_data = fs.readFileSync(path.join(__dirname, '..', funding_file)).toString();
-    let csv_data = parseCsvSync(file_data);
+    const rows = parseFile('startup_funding.csv');
+    const headers = rows[0];
+    let csv_data = rows.slice(1);
 
     const funding_data = [];
 
@@ -45,9 +51,9 @@ class FundingRaised {
   }
 
   static findBy(options = {}) {
-    const funding_file = 'startup_funding.csv';
-    const file_data = fs.readFileSync(path.join(__dirname, '..', funding_file)).toString();
-    let csv_data = parseCsvSync(file_data);
+    const rows = parseFile('startup_funding.csv');
+    const headers = rows[0];
+    let csv_data = rows.slice(1);
 
     if (options.company_name) {
       csv_data = csv_data.filter(row => options.company_name == row[1]);
