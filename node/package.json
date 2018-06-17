@@ -1,0 +1,17 @@
+{
+  "name": "refactor",
+  "version": "0.6.9",
+  "description": "Checkr Node refactor exercise",
+  "main": "funding_raised.js",
+  "scripts": {
+    "test": "mocha"
+  },
+  "author": "Eric Psalmond",
+  "license": "ISC",
+  "dependencies": {
+    "chai": "^3.5.0",
+    "commander": "^2.9.0",
+    "csv": "^0.4.6",
+    "mocha": "^2.4.5"
+  }
+}
