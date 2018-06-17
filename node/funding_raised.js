@@ -53,8 +53,19 @@ class FundingRaised {
   }
 
   static findBy(options = {}) {
-    const rows = FundingRaised.where(options);
-    return rows.length === 0 ? rows : rows[0];
+    const rows = FundingRaised._parseFile('startup_funding.csv');
+    const filters = FundingRaised.createFilters(options);
+
+    for (const row of rows) {
+      const match = filters.reduce((accumulator, filter) => {
+        const { value, index } = filter;
+        return accumulator && row[index] == value;
+      }, true);
+      if (match) {
+        return FundingRaised._getRowAsObject(row);
+      }
+    }
+    return null;
   }
 }
 
