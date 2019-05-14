@@ -34,6 +34,10 @@ class FundingRaised {
     return funding_data;
   }
 
+  static asyncWhere() {
+    return Promise.resolve(FundingRaised.where(...arguments));
+  }
+
   static _getRowAsObject(row) {
     return {
       permalink: row[0],
