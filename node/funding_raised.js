@@ -27,21 +27,26 @@ class FundingRaised {
     }
 
     csv_data.forEach((row) => {
-      const mapped = {};
-      mapped.permalink = row[0];
-      mapped.company_name = row[1];
-      mapped.number_employees = row[2];
-      mapped.category = row[3];
-      mapped.city = row[4];
-      mapped.state = row[5];
-      mapped.funded_date = row[6];
-      mapped.raised_amount = row[7];
-      mapped.raised_currency = row[8];
-      mapped.round = row[9];
+      const mapped = FundingRaised._getRowAsObject(row);
       funding_data.push(mapped);
     });
 
     return funding_data;
+  }
+
+  static _getRowAsObject(row) {
+    return {
+      permalink: row[0],
+      company_name: row[1],
+      number_employees: row[2],
+      category: row[3],
+      city: row[4],
+      state: row[5],
+      funded_date: row[6],
+      raised_amount: row[7],
+      raised_currency: row[8],
+      round: row[9]
+    };
   }
 
   static findBy(options = {}) {
@@ -52,68 +57,28 @@ class FundingRaised {
     if (options.company_name) {
       csv_data = csv_data.filter(row => options.company_name == row[1]);
       const row = csv_data[0];
-      const mapped = {};
-      mapped.permalink = row[0];
-      mapped.company_name = row[1];
-      mapped.number_employees = row[2];
-      mapped.category = row[3];
-      mapped.city = row[4];
-      mapped.state = row[5];
-      mapped.funded_date = row[6];
-      mapped.raised_amount = row[7];
-      mapped.raised_currency = row[8];
-      mapped.round = row[9];
+      const mapped = FundingRaised._getRowAsObject(row);
       return mapped;
     }
 
     if (options.city) {
       csv_data = csv_data.filter(row => options.city == row[4]);
       const row = csv_data[0];
-      const mapped = {};
-      mapped.permalink = row[0];
-      mapped.company_name = row[1];
-      mapped.number_employees = row[2];
-      mapped.category = row[3];
-      mapped.city = row[4];
-      mapped.state = row[5];
-      mapped.funded_date = row[6];
-      mapped.raised_amount = row[7];
-      mapped.raised_currency = row[8];
-      mapped.round = row[9];
+      const mapped = FundingRaised._getRowAsObject(row);
       return mapped;
     }
 
     if (options.state) {
       csv_data = csv_data.filter(row => options.state == row[5]);
       const row = csv_data[0];
-      const mapped = {};
-      mapped.permalink = row[0];
-      mapped.company_name = row[1];
-      mapped.number_employees = row[2];
-      mapped.category = row[3];
-      mapped.city = row[4];
-      mapped.state = row[5];
-      mapped.funded_date = row[6];
-      mapped.raised_amount = row[7];
-      mapped.raised_currency = row[8];
-      mapped.round = row[9];
+      const mapped = FundingRaised._getRowAsObject(row);
       return mapped;
     }
 
     if (options.round) {
       csv_data = csv_data.filter(row => options.round == row[9]);
       const row = csv_data[0];
-      const mapped = {};
-      mapped.permalink = row[0];
-      mapped.company_name = row[1];
-      mapped.number_employees = row[2];
-      mapped.category = row[3];
-      mapped.city = row[4];
-      mapped.state = row[5];
-      mapped.funded_date = row[6];
-      mapped.raised_amount = row[7];
-      mapped.raised_currency = row[8];
-      mapped.round = row[9];
+      const mapped = FundingRaised._getRowAsObject(row);
       return mapped;
     }
   }

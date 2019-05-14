@@ -97,13 +97,13 @@ describe('FundingRaised', () => {
     describe('company_name is YouTube and round is b', () => {
       const row = FundingRaised.findBy({company_name: 'YouTube', round: 'b'});
 
-      xit('returns correct result', () => {
+      it('returns correct result', () => {
         assert.equal(row.round, 'b');
       });
     });
 
     describe('async', () => {
-      xit('returns a promise instead of results', () => {
+      it('returns a promise instead of results', () => {
         return FundingRaised.asyncWhere({company_name: 'Facebook', round: 'a'})
           .then((rows) => {
             assert.lengthOf(rows, 1);
