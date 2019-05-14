@@ -12,22 +12,10 @@ class FundingRaised {
     const [headers, ...rows] = parseCsv('startup_funding.csv');
     let csv_data = rows;
 
-    if (options.company_name) {
-      csv_data = csv_data.filter(row => options.company_name == row[1]);
-    }
-
-    if (options.city) {
-      csv_data = csv_data.filter(row => options.city == row[4]);
-    }
-
-    if (options.state) {
-      csv_data = csv_data.filter(row => options.state == row[5]);
-    }
-
-    if (options.round) {
-      csv_data = csv_data.filter(row => options.round == row[9]);
-    }
-    return csv_data.map(FundingRaised._getRowAsObject);
+    const filters = FundingRaised._createFilter(headers, options);
+    return rows
+      .filter(row => FundingRaised._applyFilter(filters, row))
+      .map(FundingRaised._getRowAsObject);
   }
 
   static asyncWhere() {
