@@ -34,6 +34,19 @@ class FundingRaised {
     return Promise.resolve(FundingRaised.where(...arguments));
   }
 
+  static _createFilter(headers, options) {
+    const filters = [];
+    for (const opt in options) {
+      const field = options[opt];
+      const index = headers.indexOf(opt);
+      if (index < 0) {
+        continue;
+      }
+      filters.push({ field, index });
+    }
+    return filters;
+  }
+
   static _getRowAsObject(row) {
     return {
       permalink: row[0],
@@ -54,7 +67,16 @@ class FundingRaised {
     let csv_data = rows;
 
     if (options.company_name) {
-      csv_data = csv_data.filter(row => options.company_name == row[1]);
+      const filter = FundingRaised._createFilter(headers, options);
+
+      csv_data = csv_data.filter(row => {
+        for (const { field, index } in filter) {
+          if (row[index] !== field) {
+            return false;
+          }
+        }
+        return true;
+      });
       const row = csv_data[0];
       const mapped = FundingRaised._getRowAsObject(row);
       return mapped;
