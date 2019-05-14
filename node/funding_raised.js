@@ -76,34 +76,13 @@ class FundingRaised {
     let csv_data = rows;
 
     const filters = FundingRaised._createFilter(headers, options);
-
-    if (options.company_name) {
-      csv_data = csv_data.filter(row => FundingRaised._applyFilter(filters, row));
-      const row = csv_data[0];
-      const mapped = FundingRaised._getRowAsObject(row);
-      return mapped;
+    for (const row of rows) {
+      const match = FundingRaised._applyFilter(filters, row);
+      if (match) {
+        return FundingRaised._getRowAsObject(row);
+      }
     }
-
-    if (options.city) {
-      csv_data = csv_data.filter(row => FundingRaised._applyFilter(filters, row));
-      const row = csv_data[0];
-      const mapped = FundingRaised._getRowAsObject(row);
-      return mapped;
-    }
-
-    if (options.state) {
-      csv_data = csv_data.filter(row => FundingRaised._applyFilter(filters, row));
-      const row = csv_data[0];
-      const mapped = FundingRaised._getRowAsObject(row);
-      return mapped;
-    }
-
-    if (options.round) {
-      csv_data = csv_data.filter(row => FundingRaised._applyFilter(filters, row));
-      const row = csv_data[0];
-      const mapped = FundingRaised._getRowAsObject(row);
-      return mapped;
-    }
+    return null;
   }
 }
 
