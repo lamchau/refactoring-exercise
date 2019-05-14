@@ -10,9 +10,8 @@ const parseCsv = filename => {
 class FundingRaised {
   static where(options = {}) {
     const [headers, ...rows] = parseCsv('startup_funding.csv');
-    let csv_data = rows;
-
     const filters = FundingRaised._createFilter(headers, options);
+
     return rows
       .filter(row => FundingRaised._applyFilter(filters, row))
       .map(FundingRaised._getRowAsObject);
@@ -24,9 +23,8 @@ class FundingRaised {
 
   static findBy(options = {}) {
     const [headers, ...rows] = parseCsv('startup_funding.csv');
-    let csv_data = rows;
-
     const filters = FundingRaised._createFilter(headers, options);
+
     for (const row of rows) {
       const match = FundingRaised._applyFilter(filters, row);
       if (match) {
