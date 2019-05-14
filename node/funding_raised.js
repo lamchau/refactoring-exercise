@@ -34,6 +34,15 @@ class FundingRaised {
     return Promise.resolve(FundingRaised.where(...arguments));
   }
 
+  static _applyFilter(filters, row) {
+    for (const { field, index } of filters) {
+      if (row[index] !== field) {
+        return false;
+      }
+    }
+    return true;
+  }
+
   static _createFilter(headers, options) {
     const filters = [];
     for (const opt in options) {
@@ -66,38 +75,31 @@ class FundingRaised {
     const [headers, ...rows] = parseCsv('startup_funding.csv');
     let csv_data = rows;
 
-    if (options.company_name) {
-      const filter = FundingRaised._createFilter(headers, options);
+    const filters = FundingRaised._createFilter(headers, options);
 
-      csv_data = csv_data.filter(row => {
-        for (const { field, index } in filter) {
-          if (row[index] !== field) {
-            return false;
-          }
-        }
-        return true;
-      });
+    if (options.company_name) {
+      csv_data = csv_data.filter(row => FundingRaised._applyFilter(filters, row));
       const row = csv_data[0];
       const mapped = FundingRaised._getRowAsObject(row);
       return mapped;
     }
 
     if (options.city) {
-      csv_data = csv_data.filter(row => options.city == row[4]);
+      csv_data = csv_data.filter(row => FundingRaised._applyFilter(filters, row));
       const row = csv_data[0];
       const mapped = FundingRaised._getRowAsObject(row);
       return mapped;
     }
 
     if (options.state) {
-      csv_data = csv_data.filter(row => options.state == row[5]);
+      csv_data = csv_data.filter(row => FundingRaised._applyFilter(filters, row));
       const row = csv_data[0];
       const mapped = FundingRaised._getRowAsObject(row);
       return mapped;
     }
 
     if (options.round) {
-      csv_data = csv_data.filter(row => options.round == row[9]);
+      csv_data = csv_data.filter(row => FundingRaised._applyFilter(filters, row));
       const row = csv_data[0];
       const mapped = FundingRaised._getRowAsObject(row);
       return mapped;
