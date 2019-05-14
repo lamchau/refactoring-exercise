@@ -12,8 +12,6 @@ class FundingRaised {
     const [headers, ...rows] = parseCsv('startup_funding.csv');
     let csv_data = rows;
 
-    const funding_data = [];
-
     if (options.company_name) {
       csv_data = csv_data.filter(row => options.company_name == row[1]);
     }
@@ -29,13 +27,7 @@ class FundingRaised {
     if (options.round) {
       csv_data = csv_data.filter(row => options.round == row[9]);
     }
-
-    csv_data.forEach((row) => {
-      const mapped = FundingRaised._getRowAsObject(row);
-      funding_data.push(mapped);
-    });
-
-    return funding_data;
+    return csv_data.map(FundingRaised._getRowAsObject);
   }
 
   static asyncWhere() {
