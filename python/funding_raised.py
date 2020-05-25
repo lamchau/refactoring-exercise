@@ -6,8 +6,9 @@ class FundingRaised:
     with open("../startup_funding.csv", "rt") as csvfile:
       data = csv.reader(csvfile, delimiter=',', quotechar='"')
       csv_data = []
-      for row in data:
-        csv_data.append(row)
+      for i, row in enumerate(data):
+        if i > 0:
+          csv_data.append(row)
 
     funding = []
     if 'company_name' in options:
