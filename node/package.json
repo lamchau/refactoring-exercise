@@ -9,9 +9,9 @@
   "author": "Eric Psalmond",
   "license": "ISC",
   "dependencies": {
-    "chai": "^3.5.0",
-    "commander": "^2.9.0",
-    "csv": "^0.4.6",
-    "mocha": "^2.4.5"
+    "chai": "^4.2.0",
+    "commander": "^6.1.0",
+    "csv": "^5.3.2",
+    "mocha": "^8.1.3"
   }
 }
