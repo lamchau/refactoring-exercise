@@ -5,6 +5,8 @@ class FundingRaised:
   def where(options = {}):
     with open("../startup_funding.csv", "rt") as csvfile:
       data = csv.reader(csvfile, delimiter=',', quotechar='"')
+      # skip header
+      next(data)
       csv_data = []
       for row in data:
         csv_data.append(row)
@@ -59,6 +61,8 @@ class FundingRaised:
   def find_by(options):
     with open("../startup_funding.csv", "rt") as csvfile:
       data = csv.reader(csvfile, delimiter=',', quotechar='"')
+      # skip header
+      next(data)
       csv_data = []
       for row in data:
         csv_data.append(row)
