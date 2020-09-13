@@ -1,7 +1,7 @@
 {
   "name": "refactor",
   "version": "0.6.9",
-  "description": "Checkr Node refactor exercise",
+  "description": "ACME Node refactor exercise",
   "main": "funding_raised.js",
   "scripts": {
     "test": "mocha"
